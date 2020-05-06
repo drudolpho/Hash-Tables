@@ -55,13 +55,23 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
+        node = self.hash_table[index]
 
         if self.hash_table[index] is None:
             self.hash_table[index] = HashTableEntry(key, value)
         else:
-            current_node = self.hash_table[index]
-            self.hash_table[index] = HashTableEntry(key, value)
-            self.hash_table[index].next = current_node
+            not_placed = True
+
+            while not_placed:
+                if node.key == key:
+                    node.value = value
+                    not_placed = False
+                else:
+                    if node.next is None:
+                        node.next = HashTableEntry(key, value)
+                        not_placed = False
+                    else:
+                        node = node.next
 
 
     def delete(self, key):
@@ -74,7 +84,25 @@ class HashTable:
         """
 
         index = self.hash_index(key)
-        self.hash_table[index] = None
+        prev_node = None
+        node = self.hash_table[index]
+
+        if self.hash_table[index] is None:
+            print("Warning: Key not found")
+        else:
+            not_done = True
+            while not_done:
+                if node.key == key:
+                    prev_node.next = node.next
+                    not_done = False
+                else:
+                    if node.next is None:
+                        print("Warning: Key not found")
+                        not_done = False
+                    else:
+                        temp_node = node
+                        node = node.next_node
+                        prev_node = temp_node
 
     def get(self, key):
         """
@@ -85,7 +113,21 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        return self.hash_table[index].value
+
+        if self.hash_table[index] is None:
+            print("Warning: Key not found")
+        else:
+            not_done = True
+            node = self.hash_table[index]
+            while not_done:
+                if node.key == key:
+                    return node
+                else:
+                    if node.next is None:
+                        print("Warning: Key not found")
+                        not_done = False
+                    else:
+                        node = node.next
 
     def resize(self):
         """
